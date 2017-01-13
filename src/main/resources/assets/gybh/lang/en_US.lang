@@ -1,0 +1,23 @@
+#English Language File
+
+#Blocks
+tile.gybh.barrel.name=Modular Barrel
+
+#Items
+item.gybh.upgrade.name=Barrel Upgrade
+
+#Misc
+itemGroup.gybh=GYBH
+
+#Tooltip
+tooltip.gybh.tier=Tier
+tooltip.gybh.owner=Added by %s%s
+tooltip.gybh.block=Type
+tooltip.gybh.capacity=%dmb / %dmb
+tooltip.gybh.capacity.upgrade=%d Buckets
+tooltip.gybh.contents=Contents
+tooltip.gybh.missing=There is no data for this item. Do not trust it!
+
+#JEI
+jei.gybh.barrel.desc=A fluid tank, which can be upgraded to increase capacity. This tank keeps it's contents when broken.
+jei.gybh.upgrade.desc=An upgrade for the Modular Barrels. Upgrades can only be applied to tanks of the same tier, or one higher. Same tier upgrades are purely cosmetic.
