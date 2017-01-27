@@ -7,11 +7,6 @@ import net.darkhax.bookshelf.tileentity.TileEntityBasic;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 
 public class TileEntityModularBarrel extends TileEntityBasic {
 
@@ -66,7 +61,7 @@ public class TileEntityModularBarrel extends TileEntityBasic {
 
                 final NBTTagCompound itemStackTag = dataTag.getCompoundTag("ItemStackData");
                 this.itemStack = ItemStack.loadItemStackFromNBT(itemStackTag);
-                this.capacity = itemStackTag.getInteger("Stored");
+                this.stored = itemStackTag.getInteger("Stored");
             }
         }
     }

@@ -54,13 +54,15 @@ public class Gybh {
     @EventHandler
     public void preInit (FMLPreInitializationEvent event) {
 
+        GameRegistry.registerTileEntity(TileEntityModularBarrel.class, "modularBarrel");
+
+
         ConfigurationHandler.initConfig(event.getSuggestedConfigurationFile());
         tabGybh = new CreativeTabGybh();
         blockModularBarrels = new BlockBarrel();
         itemBlockModularBarrel = new ItemBlockBarrel(blockModularBarrels);
         GameRegistry.register(blockModularBarrels);
         GameRegistry.register(itemBlockModularBarrel);
-        GameRegistry.registerTileEntity(TileEntityModularBarrel.class, "modularBarrel");
 
         itemBarrelUpgrade = new ItemBarrelUpgrade();
         GameRegistry.register(itemBarrelUpgrade);

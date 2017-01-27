@@ -58,7 +58,7 @@ public class ProxyClient extends ProxyCommon {
                 final IBakedModel baseModel = event.getModelRegistry().getObject(MODEL);
 
                 if (baseModel instanceof IPerspectiveAwareModel)
-                    event.getModelRegistry().putObject(MODEL, new ModelRetexturable(model, "case", Blocks.GLASS.getDefaultState(), RenderUtils.getBasicTransforms((IPerspectiveAwareModel) baseModel), new BarrelItemOverride(), null));
+                    event.getModelRegistry().putObject(MODEL, new ModelRetexturable(model, "frame", Blocks.GLASS.getDefaultState(), RenderUtils.getBasicTransforms((IPerspectiveAwareModel) baseModel), new BarrelItemOverride(), null));
             }
 
             currentModel = ModelLoaderRegistry.getModel(new ResourceLocation(Constants.MODID, "item/barrel_upgrade"));
@@ -69,7 +69,7 @@ public class ProxyClient extends ProxyCommon {
                 final IBakedModel baseModel = event.getModelRegistry().getObject(MODEL_UPGRADE);
 
                 if (baseModel instanceof IPerspectiveAwareModel)
-                    event.getModelRegistry().putObject(MODEL_UPGRADE, new ModelRetexturable(model, "case", Blocks.GLASS.getDefaultState(), RenderUtils.getBasicTransforms((IPerspectiveAwareModel) baseModel), new UpgradeItemOverride(), null));
+                    event.getModelRegistry().putObject(MODEL_UPGRADE, new ModelRetexturable(model, "frame", Blocks.GLASS.getDefaultState(), RenderUtils.getBasicTransforms((IPerspectiveAwareModel) baseModel), new UpgradeItemOverride(), null));
             }
         }
 

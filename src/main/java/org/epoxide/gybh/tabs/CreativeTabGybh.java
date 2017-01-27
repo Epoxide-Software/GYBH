@@ -11,7 +11,7 @@ public class CreativeTabGybh extends CreativeTabs {
 
     public CreativeTabGybh () {
 
-        super("gbth");
+        super("gybh");
         this.setBackgroundImageName("item_search.png");
     }
 

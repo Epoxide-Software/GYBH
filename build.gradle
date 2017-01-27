@@ -44,22 +44,17 @@ minecraft {
 }
 
 repositories {
-
     maven {
-
         url = "https://maven.epoxide.org"
     }
-   
 }
 
 dependencies {
-
     compile "net.darkhax.bookshelf:Bookshelf:1.10.2-1.4.3.339"
 }
 
 //Handles basic resources such as mcmod.info
 processResources {
-
     inputs.property "version", project.version
     inputs.property "mcversion", project.minecraft.version
 
@@ -160,7 +155,6 @@ if (JavaVersion.current().isJava8Compatible()) {
     allprojects {
 
         tasks.withType(Javadoc) {
-
             options.addStringOption('Xdoclint:none', '-quiet')
         }
     }

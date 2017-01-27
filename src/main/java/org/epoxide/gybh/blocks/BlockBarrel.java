@@ -76,7 +76,6 @@ public class BlockBarrel extends BlockContainer {
                 return true;
             }
         }
-        System.out.println(playerIn.isSneaking());
 
         if (barrel.itemStack == null) {
             if (heldItem != null) {
@@ -196,8 +195,6 @@ public class BlockBarrel extends BlockContainer {
                 ItemStackUtils.dropStackInWorld(world, pos, stack);
                 barrel.itemStack = null;
             }
-            Minecraft.getMinecraft().setIngameNotInFocus();
-
             if (!player.capabilities.isCreativeMode) {
 
                 ItemStackUtils.dropStackInWorld(world, pos, ItemStackUtils.createStackFromTileEntity(barrel));
@@ -214,7 +211,7 @@ public class BlockBarrel extends BlockContainer {
             final TileEntityModularBarrel barrel = (TileEntityModularBarrel) worldIn.getTileEntity(pos);
 
             if (barrel != null)
-                barrel.readFromNBT(stack.getTagCompound().getCompoundTag("TileData"));
+                barrel.readNBT(stack.getTagCompound().getCompoundTag("TileData"));
         }
     }
 
