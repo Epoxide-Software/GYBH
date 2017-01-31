@@ -13,13 +13,20 @@ import org.epoxide.gybh.tileentity.TileEntityModularBarrel;
 import net.darkhax.bookshelf.client.model.ModelRetexturable;
 import net.darkhax.bookshelf.events.RenderItemEvent;
 import net.darkhax.bookshelf.lib.util.RenderUtils;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.IPerspectiveAwareModel;
@@ -58,7 +65,7 @@ public class ProxyClient extends ProxyCommon {
                 final IBakedModel baseModel = event.getModelRegistry().getObject(MODEL);
 
                 if (baseModel instanceof IPerspectiveAwareModel)
-                    event.getModelRegistry().putObject(MODEL, new ModelRetexturable(model, "frame", Blocks.GLASS.getDefaultState(), RenderUtils.getBasicTransforms((IPerspectiveAwareModel) baseModel), new BarrelItemOverride(), null));
+                    event.getModelRegistry().putObject(MODEL, new ModelRetexturable(model, Blocks.GLASS.getDefaultState(), RenderUtils.getBasicTransforms((IPerspectiveAwareModel) baseModel), new BarrelItemOverride()));
             }
 
             currentModel = ModelLoaderRegistry.getModel(new ResourceLocation(Constants.MODID, "item/barrel_upgrade"));
@@ -69,7 +76,7 @@ public class ProxyClient extends ProxyCommon {
                 final IBakedModel baseModel = event.getModelRegistry().getObject(MODEL_UPGRADE);
 
                 if (baseModel instanceof IPerspectiveAwareModel)
-                    event.getModelRegistry().putObject(MODEL_UPGRADE, new ModelRetexturable(model, "frame", Blocks.GLASS.getDefaultState(), RenderUtils.getBasicTransforms((IPerspectiveAwareModel) baseModel), new UpgradeItemOverride(), null));
+                    event.getModelRegistry().putObject(MODEL_UPGRADE, new ModelRetexturable(model, Blocks.GLASS.getDefaultState(), RenderUtils.getBasicTransforms((IPerspectiveAwareModel) baseModel), new UpgradeItemOverride()));
             }
         }
 
@@ -93,22 +100,43 @@ public class ProxyClient extends ProxyCommon {
         GlStateManager.pushMatrix();
         BarrelTier tier = null;
         ItemStack itemStack = null;
-        int storage = 0;
+        int stored = 0;
 
         if (event.getItemStack().hasTagCompound() && event.getItemStack().getTagCompound().hasKey("TileData")) {
             NBTTagCompound tag = event.getItemStack().getTagCompound().getCompoundTag("TileData");
             tier = GybhApi.getTier(tag.getString("TierID"));
             itemStack = ItemStack.loadItemStackFromNBT(tag.getCompoundTag("ItemStackData"));
-            storage = tag.getCompoundTag("ItemStackData").getInteger("Stored");
+            stored = tag.getCompoundTag("ItemStackData").getInteger("Stored");
         }
 
-        //        if (tier != null && fluid != null) {
-        //
-        //            GlStateManager.enableBlend();
-        //            RenderUtils.renderFluid(fluid, new BlockPos(0, 0, 0), 0.06d, 0.12d, 0.06d, 0.0d, 0.0d, 0.0d, 0.88d, (double) fluid.amount / (double) tier.getCapacity() * 0.8d, 0.88d);
-        //            GlStateManager.disableBlend();
-        //        }
+        for (int i = 0; i < 4; i++) {
+            GlStateManager.pushMatrix();
+            GlStateManager.translate(0.5D, 0.5D, 0.5D);
+            GlStateManager.rotate(90.0F * i, 0.0F, 1.0F, 0.0F);
+            Minecraft.getMinecraft().getRenderManager().renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+
+            GlStateManager.translate(0.0F, 0.0F, 0.4375F);
+
+            GlStateManager.pushMatrix();
+            GlStateManager.translate(0.0F, 0.4F, 0.07F);
+            GlStateManager.scale(0.4F, 0.4F, 0.4F);
+            EntityRenderer.drawNameplate(Minecraft.getMinecraft().fontRendererObj, itemStack.getDisplayName(), 0, 0, 0, 0, -180f, 0, false, false);
+
+            GlStateManager.translate(0.0F, -0.2F, 0.07F);
+            EntityRenderer.drawNameplate(Minecraft.getMinecraft().fontRendererObj, getStoredCapacity(stored) + "/" + getStoredCapacity(tier.getCapacity()), 0, 0, 0, 0, -180f, 0, false, false);
+        }
 
         GlStateManager.popMatrix();
+    }
+
+
+     private String getStoredCapacity (int stored) {
+
+        int stacks = (int) Math.floor(stored / 64);
+        int remaining = stored - (stacks * 64);
+        if (remaining > 0)
+            return stacks + "x64+" + remaining;
+        else
+            return stacks + "x64";
     }
 }

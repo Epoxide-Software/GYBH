@@ -45,13 +45,13 @@ public class BarrelTier implements Comparable<BarrelTier> {
     }
     
     /**
-     * Gets the capacity for the tier. By default, a tier capcity is equal to 4^tier buckets.
+     * Gets the capacity for the tier. By default, a tier capacity is equal to 4^tier buckets.
      * 
      * @return The capacity held by this tier.
      */
     public int getCapacity () {
         
-        return (int) Math.pow(4d, this.tier) * 1000;
+        return (int) Math.pow(4d, this.tier) * 64;
     }
     
     /**

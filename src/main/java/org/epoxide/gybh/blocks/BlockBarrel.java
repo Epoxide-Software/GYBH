@@ -18,7 +18,6 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -73,6 +72,7 @@ public class BlockBarrel extends BlockContainer {
 
                 barrel.upgradeBarrel(upgradeTier, state);
                 heldItem.stackSize--;
+                worldIn.markBlockRangeForRenderUpdate(pos.add(-1, -1, -1), pos);
                 return true;
             }
         }
@@ -84,6 +84,7 @@ public class BlockBarrel extends BlockContainer {
                     barrel.itemStack.stackSize = 1;
                     barrel.stored = heldItem.stackSize;
                     playerIn.setHeldItem(hand, null);
+                    worldIn.markBlockRangeForRenderUpdate(pos.add(-1, -1, -1), pos);
                     return true;
                 }
             }
@@ -100,14 +101,25 @@ public class BlockBarrel extends BlockContainer {
                 if (barrel.stored == 0) {
                     barrel.itemStack = null;
                 }
+                worldIn.markBlockRangeForRenderUpdate(pos.add(-1, -1, -1), pos);
                 return true;
 
             }
             else if (heldItem != null) {
                 if (ItemStackUtils.areStacksEqual(barrel.itemStack, heldItem, true)) {
-                    barrel.stored += heldItem.stackSize;
+                    if (heldItem.stackSize + barrel.stored > barrel.capacity) {
+                        if (barrel.capacity - barrel.stored > 0) {
+                            int barrelDiff = barrel.capacity - barrel.stored;
+                            barrel.stored += barrelDiff;
+                            heldItem.stackSize -= barrelDiff;
+                        }
+                    }
+                    else {
+                        barrel.stored += heldItem.stackSize;
 
-                    playerIn.setHeldItem(hand, null);
+                        playerIn.setHeldItem(hand, null);
+                    }
+                    worldIn.markBlockRangeForRenderUpdate(pos.add(-1, -1, -1), pos);
                     return true;
                 }
             }

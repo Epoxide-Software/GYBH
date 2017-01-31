@@ -166,7 +166,7 @@ public class GybhApi {
             }
 
             else
-                tooltip.add(I18n.format("tooltip.gybh.capacity.upgrade", tier.getCapacity() / 1000));
+                tooltip.add(I18n.format("tooltip.gybh.capacity.upgrade", tier.getCapacity()));
 
             tooltip.add(I18n.format("tooltip.gybh.block") + ": " + ItemStackUtils.getStackFromState(tier.renderState, 1).getDisplayName());
             tooltip.add(I18n.format("tooltip.gybh.tier") + ": " + tier.tier);
