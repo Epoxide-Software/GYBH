@@ -1,5 +1,6 @@
 package org.epoxide.gybh.tileentity;
 
+import net.minecraft.item.ItemBlock;
 import org.epoxide.gybh.api.BarrelTier;
 import org.epoxide.gybh.api.GybhApi;
 
@@ -10,6 +11,7 @@ import net.darkhax.bookshelf.tileentity.TileEntityBasic;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.relauncher.Side;
@@ -22,13 +24,13 @@ public class TileEntityModularBarrel extends TileEntityBasic implements ITileEnt
     public int capacity;
     public ItemStack itemStack;
 
-    public TileEntityModularBarrel () {
+    public TileEntityModularBarrel() {
 
         this.stored = 0;
         this.capacity = 0;
     }
 
-    public void upgradeBarrel (BarrelTier upgradeTier, IBlockState state) {
+    public void upgradeBarrel(BarrelTier upgradeTier, IBlockState state) {
 
         this.tier = upgradeTier;
         this.capacity = upgradeTier.getCapacity();
@@ -37,7 +39,7 @@ public class TileEntityModularBarrel extends TileEntityBasic implements ITileEnt
     }
 
     @Override
-    public void writeNBT (NBTTagCompound dataTag) {
+    public void writeNBT(NBTTagCompound dataTag) {
 
         if (this.tier != null) {
 
@@ -57,7 +59,7 @@ public class TileEntityModularBarrel extends TileEntityBasic implements ITileEnt
     }
 
     @Override
-    public void readNBT (NBTTagCompound dataTag) {
+    public void readNBT(NBTTagCompound dataTag) {
 
         this.tier = GybhApi.getTier(dataTag.getString("TierID"));
 
@@ -75,15 +77,20 @@ public class TileEntityModularBarrel extends TileEntityBasic implements ITileEnt
 
     @SideOnly(Side.CLIENT)
     @Override
-    public ImmutableMap<String, String> getRenderStates () {
+    public ImmutableMap<String, String> getRenderStates() {
 
         final ImmutableMap.Builder<String, String> builder = ImmutableMap.builder();
         if (this.tier != null && this.tier.renderState != null)
             builder.put("frame", RenderUtils.getSprite(this.tier.renderState).getIconName());
-        if (itemStack != null)
-            builder.put("background", RenderUtils.getSprite(Block.getBlockFromItem(itemStack.getItem()).getStateFromMeta(itemStack.getItemDamage())).getIconName());
-        else
+        if (itemStack != null) {
+            Item i = itemStack.getItem();
+            if (i instanceof ItemBlock)
+                builder.put("background", RenderUtils.getSprite(Block.getBlockFromItem(i).getStateFromMeta(itemStack.getItemDamage())).getIconName());
+            else
+                builder.put("background", RenderUtils.getSprite(Blocks.STONE.getDefaultState()).getIconName());
+        } else {
             builder.put("background", RenderUtils.getSprite(Blocks.STONE.getDefaultState()).getIconName());
+        }
         return builder.build();
     }
 }

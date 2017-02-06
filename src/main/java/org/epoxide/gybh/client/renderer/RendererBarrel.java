@@ -1,5 +1,7 @@
 package org.epoxide.gybh.client.renderer;
 
+import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemSkull;
 import org.epoxide.gybh.tileentity.TileEntityModularBarrel;
 
 import net.minecraft.client.Minecraft;
@@ -9,21 +11,19 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
 
 public class RendererBarrel extends TileEntitySpecialRenderer<TileEntityModularBarrel> {
 
     @Override
-    public void renderTileEntityAt (TileEntityModularBarrel te, double x, double y, double z, float partialTicks, int destroyStage) {
+    public void renderTileEntityAt(TileEntityModularBarrel te, double x, double y, double z, float partialTicks, int destroyStage) {
 
         if (te.itemStack != null)
             renderItemStack(te, x, y, z);
     }
 
 
-    public void renderItemStack (TileEntityModularBarrel tileEntity, double x, double y, double z) {
+    public void renderItemStack(TileEntityModularBarrel tileEntity, double x, double y, double z) {
 
         for (int i = 0; i < 4; i++) {
             GlStateManager.pushMatrix();
@@ -33,18 +33,49 @@ public class RendererBarrel extends TileEntitySpecialRenderer<TileEntityModularB
 
             GlStateManager.translate(0.0F, 0.0F, 0.4375F);
 
+            float add = 0;
+            if (!(tileEntity.itemStack.getItem() instanceof ItemBlock)) {
+                GlStateManager.pushMatrix();
+                GlStateManager.translate(0.0F, 0.0F, 0.1F);
+                this.renderItem(tileEntity.itemStack);
+                GlStateManager.popMatrix();
+                add += 0.6;
+            }
             GlStateManager.scale(0.4F, 0.4F, 0.4F);
-            GlStateManager.translate(0.0F, 0.4F, 0.2F);
+            GlStateManager.translate(0.0F, 0.4F + add, 0.2F);
             EntityRenderer.drawNameplate(Minecraft.getMinecraft().fontRendererObj, tileEntity.itemStack.getDisplayName(), 0, 0, 0, 0, -180f, 0, false, false);
             GlStateManager.translate(0.0F, -0.2F, 0.0F);
 
             EntityRenderer.drawNameplate(Minecraft.getMinecraft().fontRendererObj, getStoredCapacity(tileEntity.stored) + "/" + getStoredCapacity(tileEntity.capacity), 0, 0, 0, 0, -180f, 0, false, false);
 
+
             GlStateManager.popMatrix();
         }
     }
 
-    private String getStoredCapacity (int stored) {
+    private void renderItem(ItemStack itemstack) {
+        if (itemstack != null) {
+            GlStateManager.pushMatrix();
+            GlStateManager.disableLighting();
+
+            GlStateManager.scale(0.5F, 0.5F, 0.5F);
+
+            if (!Minecraft.getMinecraft().getRenderItem().shouldRenderItemIn3D(itemstack) || itemstack.getItem() instanceof ItemSkull) {
+                GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
+            }
+
+            GlStateManager.pushAttrib();
+            RenderHelper.enableStandardItemLighting();
+            Minecraft.getMinecraft().getRenderItem().renderItem(itemstack, ItemCameraTransforms.TransformType.FIXED);
+            RenderHelper.disableStandardItemLighting();
+            GlStateManager.popAttrib();
+
+            GlStateManager.enableLighting();
+            GlStateManager.popMatrix();
+        }
+    }
+
+    private String getStoredCapacity(int stored) {
 
         int stacks = (int) Math.floor(stored / 64);
         int remaining = stored - (stacks * 64);
