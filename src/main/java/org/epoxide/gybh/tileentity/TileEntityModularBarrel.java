@@ -1,23 +1,13 @@
 package org.epoxide.gybh.tileentity;
 
-import net.minecraft.item.ItemBlock;
+import net.darkhax.bookshelf.tileentity.TileEntityBasic;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import org.epoxide.gybh.api.BarrelTier;
 import org.epoxide.gybh.api.GybhApi;
 
-import com.google.common.collect.ImmutableMap;
-import net.darkhax.bookshelf.client.model.ITileEntityRender;
-import net.darkhax.bookshelf.lib.util.RenderUtils;
-import net.darkhax.bookshelf.tileentity.TileEntityBasic;
-import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-
-public class TileEntityModularBarrel extends TileEntityBasic implements ITileEntityRender {
+public class TileEntityModularBarrel extends TileEntityBasic {
 
     public BarrelTier tier;
     public int stored;
@@ -73,24 +63,5 @@ public class TileEntityModularBarrel extends TileEntityBasic implements ITileEnt
                 this.stored = itemStackTag.getInteger("Stored");
             }
         }
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public ImmutableMap<String, String> getRenderStates() {
-
-        final ImmutableMap.Builder<String, String> builder = ImmutableMap.builder();
-        if (this.tier != null && this.tier.renderState != null)
-            builder.put("frame", RenderUtils.getSprite(this.tier.renderState).getIconName());
-        if (itemStack != null) {
-            Item i = itemStack.getItem();
-            if (i instanceof ItemBlock)
-                builder.put("background", RenderUtils.getSprite(Block.getBlockFromItem(i).getStateFromMeta(itemStack.getItemDamage())).getIconName());
-            else
-                builder.put("background", RenderUtils.getSprite(Blocks.STONE.getDefaultState()).getIconName());
-        } else {
-            builder.put("background", RenderUtils.getSprite(Blocks.STONE.getDefaultState()).getIconName());
-        }
-        return builder.build();
     }
 }

@@ -1,11 +1,11 @@
 package org.epoxide.gybh.client.renderer;
 
+import net.darkhax.bookshelf.client.model.ModelMultiRetexturable;
 import org.epoxide.gybh.api.BarrelTier;
 import org.epoxide.gybh.api.GybhApi;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import net.darkhax.bookshelf.client.model.ModelRetexturable;
 import net.darkhax.bookshelf.lib.util.RenderUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -44,7 +44,7 @@ public class BarrelItemOverride extends ItemOverrideList {
                             builder.put("background", RenderUtils.getSprite(Block.getBlockFromItem(itemStack.getItem()).getStateFromMeta(itemStack.getItemDamage())).getIconName());
                         else
                             builder.put("background", RenderUtils.getSprite(Blocks.STONE.getDefaultState()).getIconName());
-                        return ((ModelRetexturable) originalModel).getRetexturedModel(builder.build());
+                        return ((ModelMultiRetexturable) originalModel).getRetexturedModel(builder.build());
                     }
                 }
             }
@@ -54,7 +54,7 @@ public class BarrelItemOverride extends ItemOverrideList {
             final ImmutableMap.Builder<String, String> builder = ImmutableMap.builder();
             builder.put("frame", RenderUtils.getSprite(Blocks.FIRE.getDefaultState()).getIconName());
             builder.put("background", RenderUtils.getSprite(Blocks.FIRE.getDefaultState()).getIconName());
-            return ((ModelRetexturable) originalModel).getRetexturedModel(builder.build());
+            return ((ModelMultiRetexturable) originalModel).getRetexturedModel(builder.build());
         }
         return originalModel;
     }

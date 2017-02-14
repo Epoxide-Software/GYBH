@@ -50,7 +50,7 @@ repositories {
 }
 
 dependencies {
-    compile "net.darkhax.bookshelf:Bookshelf:1.10.2-1.4.3.339"
+    compile "net.darkhax.bookshelf:Bookshelf:1.10.2-1.4.3.340"
 }
 
 //Handles basic resources such as mcmod.info

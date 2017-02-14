@@ -1,9 +1,9 @@
 package org.epoxide.gybh.client.renderer;
 
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemSkull;
-import org.epoxide.gybh.tileentity.TileEntityModularBarrel;
-
+import com.google.common.collect.ImmutableMap;
+import net.darkhax.bookshelf.client.model.ITileEntityRender;
+import net.darkhax.bookshelf.lib.util.RenderUtils;
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -11,9 +11,15 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemSkull;
 import net.minecraft.item.ItemStack;
+import org.epoxide.gybh.api.BarrelTier;
+import org.epoxide.gybh.tileentity.TileEntityModularBarrel;
 
-public class RendererBarrel extends TileEntitySpecialRenderer<TileEntityModularBarrel> {
+public class RendererBarrel extends TileEntitySpecialRenderer<TileEntityModularBarrel> implements ITileEntityRender<TileEntityModularBarrel> {
 
     @Override
     public void renderTileEntityAt(TileEntityModularBarrel te, double x, double y, double z, float partialTicks, int destroyStage) {
@@ -83,5 +89,26 @@ public class RendererBarrel extends TileEntitySpecialRenderer<TileEntityModularB
             return stacks + "x64+" + remaining;
         else
             return stacks + "x64";
+    }
+
+
+    @Override
+    public ImmutableMap<String, String> getRenderStates(TileEntityModularBarrel tileEntity) {
+        BarrelTier tier = tileEntity.tier;
+        ItemStack itemStack = tileEntity.itemStack;
+
+        final ImmutableMap.Builder<String, String> builder = ImmutableMap.builder();
+        if (tier != null && tier.renderState != null)
+            builder.put("frame", RenderUtils.getSprite(tier.renderState).getIconName());
+        if (itemStack != null) {
+            Item i = itemStack.getItem();
+            if (i instanceof ItemBlock)
+                builder.put("background", RenderUtils.getSprite(Block.getBlockFromItem(i).getStateFromMeta(tileEntity.itemStack.getItemDamage())).getIconName());
+            else
+                builder.put("background", RenderUtils.getSprite(Blocks.STONE.getDefaultState()).getIconName());
+        } else {
+            builder.put("background", RenderUtils.getSprite(Blocks.STONE.getDefaultState()).getIconName());
+        }
+        return builder.build();
     }
 }
