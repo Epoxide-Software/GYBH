@@ -4,6 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
+import net.minecraft.init.Blocks;
 import org.epoxide.gybh.api.BarrelTier;
 import org.epoxide.gybh.api.GybhApi;
 import org.epoxide.gybh.blocks.BlockBarrel;
@@ -80,9 +81,9 @@ public class Gybh {
         for (final BarrelTier tier : GybhApi.REGISTRY.values()) {
 
             if (tier.tier == 1)
-                GameRegistry.addRecipe(new ShapedOreRecipe(GybhApi.createTieredBarrel(tier), new Object[] { "xyx", "yzy", "xyx", 'x', tier.recipe, 'y', OreDictUtils.PANE_GLASS, 'z', Items.BUCKET }));
+                GameRegistry.addRecipe(new ShapedOreRecipe(GybhApi.createTieredBarrel(tier), new Object[] { "xsx", "szs", "xsx", 'x', tier.recipe, 's', OreDictUtils.STONE, 'z', Blocks.CHEST }));
 
-            GameRegistry.addRecipe(new ShapedOreRecipe(GybhApi.createTierUpgrade(tier), new Object[] { "xyx", "yxy", "xyx", 'x', tier.recipe, 'y', OreDictUtils.PANE_GLASS }));
+            GameRegistry.addRecipe(new ShapedOreRecipe(GybhApi.createTierUpgrade(tier), new Object[] { "xsx", "sxs", "xsx", 'x', tier.recipe, 's', OreDictUtils.STONE }));
         }
 
         if (Loader.isModLoaded("Waila"))
