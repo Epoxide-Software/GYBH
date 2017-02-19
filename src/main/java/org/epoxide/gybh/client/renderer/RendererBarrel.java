@@ -66,10 +66,6 @@ public class RendererBarrel extends TileEntitySpecialRenderer<TileEntityModularB
 
             GlStateManager.scale(0.5F, 0.5F, 0.5F);
 
-            if (!Minecraft.getMinecraft().getRenderItem().shouldRenderItemIn3D(itemstack) || itemstack.getItem() instanceof ItemSkull) {
-                GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
-            }
-
             GlStateManager.pushAttrib();
             RenderHelper.enableStandardItemLighting();
             Minecraft.getMinecraft().getRenderItem().renderItem(itemstack, ItemCameraTransforms.TransformType.FIXED);
