@@ -51,7 +51,7 @@ public class BarrelTier implements Comparable<BarrelTier> {
      */
     public int getCapacity () {
         
-        return (int) Math.pow(4d, this.tier) * 64;
+    	return (int) (Math.pow(this.tier, this.tier) * 32 * 64);
     }
     
     /**
