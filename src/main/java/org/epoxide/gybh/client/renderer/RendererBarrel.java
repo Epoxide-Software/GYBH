@@ -16,6 +16,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemSkull;
 import net.minecraft.item.ItemStack;
+
+import org.apache.commons.lang3.StringUtils;
 import org.epoxide.gybh.api.BarrelTier;
 import org.epoxide.gybh.tileentity.TileEntityModularBarrel;
 
@@ -49,7 +51,7 @@ public class RendererBarrel extends TileEntitySpecialRenderer<TileEntityModularB
             }
             GlStateManager.scale(0.4F, 0.4F, 0.4F);
             GlStateManager.translate(0.0F, 0.4F + add, 0.2F);
-            EntityRenderer.drawNameplate(Minecraft.getMinecraft().fontRendererObj, tileEntity.itemStack.getDisplayName(), 0, 0, 0, 0, -180f, 0, false, false);
+            EntityRenderer.drawNameplate(Minecraft.getMinecraft().fontRendererObj, StringUtils.abbreviate(tileEntity.itemStack.getDisplayName(), 17), 0, 0, 0, 0, -180f, 0, false, false);
             GlStateManager.translate(0.0F, -0.2F, 0.0F);
 
             EntityRenderer.drawNameplate(Minecraft.getMinecraft().fontRendererObj, getStoredCapacity(tileEntity.stored) + "/" + getStoredCapacity(tileEntity.capacity), 0, 0, 0, 0, -180f, 0, false, false);
@@ -86,7 +88,6 @@ public class RendererBarrel extends TileEntitySpecialRenderer<TileEntityModularB
         else
             return stacks + "x64";
     }
-
 
     @Override
     public ImmutableMap<String, String> getRenderStates(TileEntityModularBarrel tileEntity) {
