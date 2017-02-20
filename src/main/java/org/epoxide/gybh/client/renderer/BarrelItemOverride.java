@@ -1,7 +1,11 @@
 package org.epoxide.gybh.client.renderer;
 
+import org.epoxide.gybh.api.BarrelTier;
+import org.epoxide.gybh.api.GybhApi;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+
 import net.darkhax.bookshelf.client.model.ModelMultiRetexturable;
 import net.darkhax.bookshelf.lib.util.RenderUtils;
 import net.minecraft.block.Block;
@@ -14,8 +18,6 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
-import org.epoxide.gybh.api.BarrelTier;
-import org.epoxide.gybh.api.GybhApi;
 
 public class BarrelItemOverride extends ItemOverrideList {
 
@@ -30,7 +32,7 @@ public class BarrelItemOverride extends ItemOverrideList {
         if (stack != null && stack.hasTagCompound() && stack.getTagCompound().hasKey("TileData")) {
 
             if (stack.hasTagCompound() && stack.getTagCompound().hasKey("TileData")) {
-                NBTTagCompound tag = stack.getTagCompound().getCompoundTag("TileData");
+                final NBTTagCompound tag = stack.getTagCompound().getCompoundTag("TileData");
                 final BarrelTier tier = GybhApi.getTier(tag.getString("TierID"));
                 final ItemStack itemStack = ItemStack.loadItemStackFromNBT(tag.getCompoundTag("ItemStackData"));
                 if (tier != null) {
@@ -41,19 +43,22 @@ public class BarrelItemOverride extends ItemOverrideList {
                         final ImmutableMap.Builder<String, String> builder = ImmutableMap.builder();
                         builder.put("frame", RenderUtils.getSprite(state).getIconName());
                         if (itemStack != null && itemStack.getItem() != null)
-                            if (itemStack.getItem() instanceof ItemBlock)
+                            if (itemStack.getItem() instanceof ItemBlock) {
                                 builder.put("background", RenderUtils.getSprite(Block.getBlockFromItem(itemStack.getItem()).getStateFromMeta(itemStack.getItemDamage())).getIconName());
-                            else
+                            }
+                            else {
                                 builder.put("background", RenderUtils.getSprite(Blocks.STONE.getDefaultState()).getIconName());
-                        else
+                            }
+                        else {
                             builder.put("background", RenderUtils.getSprite(Blocks.STONE.getDefaultState()).getIconName());
+                        }
                         return ((ModelMultiRetexturable) originalModel).getRetexturedModel(builder.build());
                     }
                 }
             }
         }
 
-        else{
+        else {
             final ImmutableMap.Builder<String, String> builder = ImmutableMap.builder();
             builder.put("frame", RenderUtils.getSprite(Blocks.FIRE.getDefaultState()).getIconName());
             builder.put("background", RenderUtils.getSprite(Blocks.FIRE.getDefaultState()).getIconName());

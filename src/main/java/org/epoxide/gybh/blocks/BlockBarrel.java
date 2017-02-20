@@ -92,8 +92,8 @@ public class BlockBarrel extends BlockContainer {
         else {
 
             if (playerIn.isSneaking() && heldItem == null) {
-                ItemStack stack = barrel.itemStack.copy();
-                int dropSize = Math.min(64, barrel.stored);
+                final ItemStack stack = barrel.itemStack.copy();
+                final int dropSize = Math.min(64, barrel.stored);
                 stack.stackSize = dropSize;
                 playerIn.dropItem(stack, false);
 
@@ -109,7 +109,7 @@ public class BlockBarrel extends BlockContainer {
                 if (ItemStackUtils.areStacksEqual(barrel.itemStack, heldItem, true)) {
                     if (heldItem.stackSize + barrel.stored > barrel.capacity) {
                         if (barrel.capacity - barrel.stored > 0) {
-                            int barrelDiff = barrel.capacity - barrel.stored;
+                            final int barrelDiff = barrel.capacity - barrel.stored;
                             barrel.stored += barrelDiff;
                             heldItem.stackSize -= barrelDiff;
                         }
@@ -202,7 +202,7 @@ public class BlockBarrel extends BlockContainer {
         final TileEntityModularBarrel barrel = (TileEntityModularBarrel) world.getTileEntity(pos);
         if (barrel != null) {
             if (barrel.itemStack != null) {
-                ItemStack stack = barrel.itemStack.copy();
+                final ItemStack stack = barrel.itemStack.copy();
                 stack.stackSize = barrel.stored;
                 ItemStackUtils.dropStackInWorld(world, pos, stack);
                 barrel.itemStack = null;
@@ -222,8 +222,9 @@ public class BlockBarrel extends BlockContainer {
 
             final TileEntityModularBarrel barrel = (TileEntityModularBarrel) worldIn.getTileEntity(pos);
 
-            if (barrel != null)
+            if (barrel != null) {
                 barrel.readNBT(stack.getTagCompound().getCompoundTag("TileData"));
+            }
         }
     }
 
@@ -239,7 +240,8 @@ public class BlockBarrel extends BlockContainer {
     @SideOnly(Side.CLIENT)
     public void getSubBlocks (Item itemIn, CreativeTabs tab, List<ItemStack> itemList) {
 
-        for (final BarrelTier tier : GybhApi.REGISTRY.values())
+        for (final BarrelTier tier : GybhApi.REGISTRY.values()) {
             itemList.add(GybhApi.createTieredBarrel(tier));
+        }
     }
 }

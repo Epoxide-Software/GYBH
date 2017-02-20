@@ -1,26 +1,30 @@
 package org.epoxide.gybh.tileentity;
 
+import org.epoxide.gybh.api.BarrelTier;
+import org.epoxide.gybh.api.GybhApi;
+
 import net.darkhax.bookshelf.tileentity.TileEntityBasic;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import org.epoxide.gybh.api.BarrelTier;
-import org.epoxide.gybh.api.GybhApi;
 
 public class TileEntityModularBarrel extends TileEntityBasic {
 
     public BarrelTier tier;
+
     public int stored;
+
     public int capacity;
+
     public ItemStack itemStack;
 
-    public TileEntityModularBarrel() {
+    public TileEntityModularBarrel () {
 
         this.stored = 0;
         this.capacity = 0;
     }
 
-    public void upgradeBarrel(BarrelTier upgradeTier, IBlockState state) {
+    public void upgradeBarrel (BarrelTier upgradeTier, IBlockState state) {
 
         this.tier = upgradeTier;
         this.capacity = upgradeTier.getCapacity();
@@ -29,7 +33,7 @@ public class TileEntityModularBarrel extends TileEntityBasic {
     }
 
     @Override
-    public void writeNBT(NBTTagCompound dataTag) {
+    public void writeNBT (NBTTagCompound dataTag) {
 
         if (this.tier != null) {
 
@@ -39,7 +43,7 @@ public class TileEntityModularBarrel extends TileEntityBasic {
 
                 final NBTTagCompound itemStackTag = new NBTTagCompound();
 
-                itemStackTag.setInteger("Stored", stored);
+                itemStackTag.setInteger("Stored", this.stored);
                 this.itemStack.writeToNBT(itemStackTag);
 
                 dataTag.setTag("ItemStackData", itemStackTag);
@@ -49,12 +53,12 @@ public class TileEntityModularBarrel extends TileEntityBasic {
     }
 
     @Override
-    public void readNBT(NBTTagCompound dataTag) {
+    public void readNBT (NBTTagCompound dataTag) {
 
         this.tier = GybhApi.getTier(dataTag.getString("TierID"));
 
         if (this.tier != null) {
-            this.capacity = tier.getCapacity();
+            this.capacity = this.tier.getCapacity();
 
             if (dataTag.hasKey("ItemStackData")) {
 

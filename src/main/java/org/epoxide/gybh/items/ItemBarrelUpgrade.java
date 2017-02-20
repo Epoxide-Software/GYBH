@@ -32,8 +32,9 @@ public class ItemBarrelUpgrade extends Item {
 
         BarrelTier tier = null;
 
-        if (stack.hasTagCompound() && stack.getTagCompound().hasKey("TierID"))
+        if (stack.hasTagCompound() && stack.getTagCompound().hasKey("TierID")) {
             tier = GybhApi.getTier(stack.getTagCompound().getString("TierID"));
+        }
 
         GybhApi.createTierTooltip(tier, null, 0, info);
     }
@@ -42,7 +43,8 @@ public class ItemBarrelUpgrade extends Item {
     @SideOnly(Side.CLIENT)
     public void getSubItems (Item item, CreativeTabs tab, List<ItemStack> itemList) {
 
-        for (final BarrelTier tier : GybhApi.REGISTRY.values())
+        for (final BarrelTier tier : GybhApi.REGISTRY.values()) {
             itemList.add(GybhApi.createTierUpgrade(tier));
+        }
     }
 }

@@ -17,11 +17,11 @@ import net.minecraftforge.fml.common.registry.IForgeRegistryEntry;
  * https://github.com/Epoxide-Software/GYBH/blob/master/README.md
  */
 public class GybhWrapper {
-    
+
     /**
      * Wrapper for the GYBH IMC API. This will create a new tier which can be applied to the
      * tanks.
-     * 
+     *
      * @param tierName The name of the tier to register. This should be unique to the mod which
      *        added it. Your modId will be added to this on Gybh's end, similarly to how forge
      *        adds it to item/block ids.
@@ -32,36 +32,37 @@ public class GybhWrapper {
      *        oredict name!
      */
     public static void addTier (String tierName, Block block, int meta, int tier, Object recipe) {
-        
+
         final NBTTagCompound tag = new NBTTagCompound();
         tag.setString("tierName", tierName);
         tag.setString("blockId", block.getRegistryName().toString());
         tag.setInteger("meta", meta);
         tag.setInteger("tier", tier);
-        
+
         if (recipe instanceof ItemStack) {
-            
+
             final ItemStack stack = (ItemStack) recipe;
             tag.setString("recipe", stack.getItem().getRegistryName().toString() + "#" + stack.getMetadata());
         }
-        
-        else if (recipe instanceof IForgeRegistryEntry.Impl)
+
+        else if (recipe instanceof IForgeRegistryEntry.Impl) {
             tag.setString("recipe", ((IForgeRegistryEntry.Impl) recipe).getRegistryName().toString() + "#" + 0);
-        
-        else
+        }
+        else {
             tag.setString("recipe", (String) recipe);
-        
+        }
+
         FMLInterModComms.sendMessage(Constants.MODID, "addTier", tag);
     }
-    
+
     /**
      * Wrapper for the GYBH IMC API. This will remove a tier from the mod, preventing it from
      * being craftable. Can be used on any tier, including those added by other mods.
-     * 
+     *
      * @param tierName The id of the tier to remove.
      */
     public static void removeTier (ResourceLocation tierName) {
-        
+
         FMLInterModComms.sendMessage(Constants.MODID, "removeTier", tierName);
     }
 }

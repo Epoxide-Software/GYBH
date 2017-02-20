@@ -34,7 +34,7 @@ public class ItemBlockBarrel extends ItemBlock {
         int storage = 0;
 
         if (stack.hasTagCompound() && stack.getTagCompound().hasKey("TileData")) {
-            NBTTagCompound tag = stack.getTagCompound().getCompoundTag("TileData");
+            final NBTTagCompound tag = stack.getTagCompound().getCompoundTag("TileData");
             tier = GybhApi.getTier(tag.getString("TierID"));
             itemStack = ItemStack.loadItemStackFromNBT(tag.getCompoundTag("ItemStackData"));
             storage = tag.getCompoundTag("ItemStackData").getInteger("Stored");

@@ -5,10 +5,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.epoxide.gybh.Gybh;
-import org.epoxide.gybh.libs.ConfigurationHandler;
 import org.epoxide.gybh.libs.Constants;
 
 import com.mojang.realmsclient.gui.ChatFormatting;
+
 import net.darkhax.bookshelf.lib.util.ItemStackUtils;
 import net.darkhax.bookshelf.lib.util.ModUtils;
 import net.darkhax.bookshelf.lib.util.OreDictUtils;
@@ -20,57 +20,80 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fluids.FluidStack;
 
 public class GybhApi {
 
     /**
      * Registry of all tiers that have been registered.
      */
-    public static Map<ResourceLocation, BarrelTier> REGISTRY = new HashMap<ResourceLocation, BarrelTier>();
+    public static Map<ResourceLocation, BarrelTier> REGISTRY = new HashMap<>();
 
     // Tier 1
     public static final BarrelTier WOOD_OAK = createTier("oak", Blocks.PLANKS, 0, new ItemStack(Blocks.PLANKS, 1, 0), 1);
+
     public static final BarrelTier WOOD_SPRUCE = createTier("spruce", Blocks.PLANKS, 1, new ItemStack(Blocks.PLANKS, 1, 1), 1);
+
     public static final BarrelTier WOOD_BIRCH = createTier("birch", Blocks.PLANKS, 2, new ItemStack(Blocks.PLANKS, 1, 2), 1);
+
     public static final BarrelTier WOOD_JUNGLE = createTier("jungle", Blocks.PLANKS, 3, new ItemStack(Blocks.PLANKS, 1, 3), 1);
+
     public static final BarrelTier WOOD_ACACIA = createTier("acacia", Blocks.PLANKS, 4, new ItemStack(Blocks.PLANKS, 1, 4), 1);
+
     public static final BarrelTier WOOD_DARK_OAK = createTier("dark_oak", Blocks.PLANKS, 5, new ItemStack(Blocks.PLANKS, 1, 5), 1);
+
     public static final BarrelTier CLAY = createTier("clay", Blocks.HARDENED_CLAY, 0, OreDictUtils.INGOT_BRICK, 1);
 
     // Tier 2
     public static final BarrelTier STONE_COBBLE = createTier("stone_cobble", Blocks.COBBLESTONE, 0, OreDictUtils.COBBLESTONE, 2);
+
     public static final BarrelTier STONE_SMOOTH = createTier("stone_smooth", Blocks.STONE, 0, new ItemStack(Blocks.STONE, 1, 0), 2);
+
     public static final BarrelTier STONE_GRANITE = createTier("stone_granite", Blocks.STONE, 1, new ItemStack(Blocks.STONE, 1, 1), 2);
+
     public static final BarrelTier STONE_GRANITE_SMOOTH = createTier("stone_granite_smooth", Blocks.STONE, 2, new ItemStack(Blocks.STONE, 1, 2), 2);
+
     public static final BarrelTier STONE_DIORITE = createTier("stone_diorite", Blocks.STONE, 3, new ItemStack(Blocks.STONE, 1, 3), 2);
+
     public static final BarrelTier STONE_DIORITE_SMOOTH = createTier("stone_diorite_smooth", Blocks.STONE, 4, new ItemStack(Blocks.STONE, 1, 4), 2);
+
     public static final BarrelTier STONE_ANDESITE = createTier("stone_andesite", Blocks.STONE, 5, new ItemStack(Blocks.STONE, 1, 5), 2);
+
     public static final BarrelTier STONE_ANDESITE_SMOOTH = createTier("stone_andesite_smooth", Blocks.STONE, 6, new ItemStack(Blocks.STONE, 1, 6), 2);
+
     public static final BarrelTier SANDSTONE_BRICK = createTier("sandstone_brick", Blocks.SANDSTONE, 0, Blocks.SANDSTONE, 2);
+
     public static final BarrelTier SANDSTONE_BRICK_RED = createTier("sandstone_brick_red", Blocks.RED_SANDSTONE, 0, Blocks.RED_SANDSTONE, 2);
+
     public static final BarrelTier BRICK = createTier("brick", Blocks.BRICK_BLOCK, 0, Blocks.BRICK_BLOCK, 2);
+
     public static final BarrelTier BRICK_NETHER = createTier("brick_nether", Blocks.NETHER_BRICK, 0, OreDictUtils.INGOT_BRICK_NETHER, 2);
+
     public static final BarrelTier BRICK_STONE = createTier("brick_stone", Blocks.STONEBRICK, 0, Blocks.STONEBRICK, 2);
+
     public static final BarrelTier BRICK_PURPUR = createTier("brick_purpur", Blocks.PURPUR_BLOCK, 0, Blocks.PURPUR_BLOCK, 2);
+
     public static final BarrelTier BRICK_END = createTier("brick_end", Blocks.END_BRICKS, 0, Blocks.END_BRICKS, 2);
+
     public static final BarrelTier PRISMARINE = createTier("prismarine", Blocks.PRISMARINE, 0, Items.PRISMARINE_SHARD, 2);
 
     // Tier 3
     public static final BarrelTier IRON = createTier("iron", Blocks.IRON_BLOCK, 0, OreDictUtils.INGOT_IRON, 3);
+
     public static final BarrelTier GOLD = createTier("gold", Blocks.GOLD_BLOCK, 0, OreDictUtils.INGOT_GOLD, 3);
+
     public static final BarrelTier OBSIDIAN = createTier("obsidian", Blocks.OBSIDIAN, 0, OreDictUtils.OBSIDIAN, 3);
 
     // Tier 4
     public static final BarrelTier LAPIS = createTier("lapis", Blocks.LAPIS_BLOCK, 0, OreDictUtils.GEM_LAPIS, 4);
+
     public static final BarrelTier REDSTONE = createTier("redstone", Blocks.REDSTONE_BLOCK, 0, OreDictUtils.DUST_REDSTONE, 4);
+
     public static final BarrelTier QUARTZ = createTier("quartz", Blocks.QUARTZ_BLOCK, 0, OreDictUtils.GEM_QUARTZ, 4);
 
     // Tier 5
     public static final BarrelTier DIAMOND = createTier("diamond", Blocks.DIAMOND_BLOCK, 0, OreDictUtils.GEM_DIAMOND, 5);
+
     public static final BarrelTier EMERALD = createTier("emerald", Blocks.EMERALD_BLOCK, 0, OreDictUtils.GEM_EMERALD, 5);
 
     /**
@@ -153,7 +176,7 @@ public class GybhApi {
      * @param tier The tier to represent.
      * @param tooltip The list to add to.
      */
-    public static void createTierTooltip (BarrelTier tier, ItemStack stack, int storage,  List<String> tooltip) {
+    public static void createTierTooltip (BarrelTier tier, ItemStack stack, int storage, List<String> tooltip) {
 
         final EntityPlayer clientPlayer = PlayerUtils.getClientPlayer();
 
@@ -164,9 +187,9 @@ public class GybhApi {
                 tooltip.add(I18n.format("tooltip.gybh.capacity", storage, tier.getCapacity()));
                 tooltip.add(I18n.format("tooltip.gybh.contents") + ": " + stack.getDisplayName());
             }
-
-            else
+            else {
                 tooltip.add(I18n.format("tooltip.gybh.capacity.upgrade", tier.getCapacity()));
+            }
 
             tooltip.add(I18n.format("tooltip.gybh.block") + ": " + ItemStackUtils.getStackFromState(tier.renderState, 1).getDisplayName());
             tooltip.add(I18n.format("tooltip.gybh.tier") + ": " + tier.tier);
@@ -180,8 +203,9 @@ public class GybhApi {
 
     public static void removeTier (String modId, ResourceLocation tier) {
 
-        if (REGISTRY.remove(tier) != null)
+        if (REGISTRY.remove(tier) != null) {
             Constants.LOG.info("The tier " + tier.toString() + " was removed by " + modId);
+        }
     }
 
     public static BarrelTier createTier (String modId, String name, Block block, int meta, Object recipe, int tier) {
@@ -202,9 +226,10 @@ public class GybhApi {
 
         System.out.println("|Name|Identifier|Tier|Capacity|Notes|");
         System.out.println("|----|----------|----|--------|-----|");
-        for (BarrelTier tier : REGISTRY.values())
-            if (tier.identifier.getResourceDomain().startsWith(modId))
-                System.out.println(String.format("|%s|%s|%d|%s|%s|", ItemStackUtils.getStackFromState(tier.renderState, 1).getDisplayName(), tier.identifier.toString(), tier.tier, (tier.getCapacity() / 1000) + "B", tier.isFlammable(null, null, null) ? "flammable" : ""));
+        for (final BarrelTier tier : REGISTRY.values())
+            if (tier.identifier.getResourceDomain().startsWith(modId)) {
+                System.out.println(String.format("|%s|%s|%d|%s|%s|", ItemStackUtils.getStackFromState(tier.renderState, 1).getDisplayName(), tier.identifier.toString(), tier.tier, tier.getCapacity() / 1000 + "B", tier.isFlammable(null, null, null) ? "flammable" : ""));
+            }
     }
 
     private static BarrelTier createTier (String name, Block block, int meta, Object recipe, int tier) {
