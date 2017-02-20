@@ -83,7 +83,7 @@ public class Gybh {
             if (tier.tier == 1)
                 GameRegistry.addRecipe(new ShapedOreRecipe(GybhApi.createTieredBarrel(tier), new Object[] { "xsx", "szs", "xsx", 'x', tier.recipe, 's', OreDictUtils.STONE, 'z', Blocks.CHEST }));
 
-            GameRegistry.addRecipe(new ShapedOreRecipe(GybhApi.createTierUpgrade(tier), new Object[] { "xsx", "sxs", "xsx", 'x', tier.recipe, 's', OreDictUtils.STONE }));
+            GameRegistry.addRecipe(new ShapedOreRecipe(GybhApi.createTierUpgrade(tier), new Object[] { "xsx", "sss", "xsx", 'x', tier.recipe, 's', OreDictUtils.STONE, 's', OreDictUtils.SLIMEBALL }));
         }
 
         if (Loader.isModLoaded("Waila"))
