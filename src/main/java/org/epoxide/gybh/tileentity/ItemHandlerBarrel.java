@@ -44,6 +44,16 @@ public class ItemHandlerBarrel implements IItemHandler {
         return this.capacity;
     }
 
+    public void setCount (int count) {
+
+        this.count = count;
+
+        if (this.count == 0) {
+
+            this.contents = null;
+        }
+    }
+
     @Override
     public int getSlots () {
 

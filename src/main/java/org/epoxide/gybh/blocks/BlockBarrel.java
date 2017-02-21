@@ -20,8 +20,10 @@ import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Enchantments;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -114,6 +116,51 @@ public class BlockBarrel extends BlockContainer {
     }
 
     @Override
+    public boolean removedByPlayer (IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest) {
+
+        this.handleDrops(player, world, pos, world.getTileEntity(pos));
+        return world.setBlockToAir(pos);
+    }
+
+    @Override
+    public void onBlockExploded (World world, BlockPos pos, Explosion explosion) {
+
+        this.handleDrops(null, world, pos, world.getTileEntity(pos));
+        world.setBlockToAir(pos);
+        super.onBlockExploded(world, pos, explosion);
+    }
+
+    private void handleDrops (EntityPlayer player, World world, BlockPos pos, TileEntity tile) {
+        
+        if (player != null && ((player.isCreative() && player.isSneaking()) || EnchantmentHelper.getEnchantmentLevel(Enchantments.SILK_TOUCH, player.getHeldItemMainhand()) > 0)) {
+
+            ItemStackUtils.dropStackInWorld(world, pos, ItemStackUtils.createStackFromTileEntity(tile));
+            return;
+        }
+        
+        if (!(tile instanceof TileEntityModularBarrel) || (player != null && player.isCreative()))
+            return;
+
+        final TileEntityModularBarrel barrel = (TileEntityModularBarrel) tile;
+
+        if (barrel.getInventory() != null) {
+
+            final int maxStackSize = barrel.getInventory().getContentStack().getMaxStackSize();
+
+            while (barrel.getInventory().getCount() > 0) {
+
+                final ItemStack drop = barrel.getInventory().extractItem(0, maxStackSize, false);
+
+                if (drop != null) {
+                    ItemStackUtils.dropStackInWorld(world, pos, drop);
+                }
+            }
+        }
+
+        ItemStackUtils.dropStackInWorld(world, pos, ItemStackUtils.createStackFromTileEntity(tile));
+    }
+
+    @Override
     public BlockStateContainer createBlockState () {
 
         return new ExtendedBlockState(this, new IProperty[] {}, new IUnlistedProperty[] { BlockStates.HELD_STATE, BlockStates.BLOCK_ACCESS, BlockStates.BLOCKPOS });
@@ -183,18 +230,6 @@ public class BlockBarrel extends BlockContainer {
     }
 
     @Override
-    public boolean removedByPlayer (IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest) {
-
-        if (!player.capabilities.isCreativeMode) {
-
-            final TileEntityModularBarrel barrel = (TileEntityModularBarrel) world.getTileEntity(pos);
-            ItemStackUtils.dropStackInWorld(world, pos, ItemStackUtils.createStackFromTileEntity(barrel));
-        }
-
-        return world.setBlockToAir(pos);
-    }
-
-    @Override
     public void onBlockPlacedBy (World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
 
         if (stack.hasTagCompound()) {
@@ -202,17 +237,10 @@ public class BlockBarrel extends BlockContainer {
             final TileEntityModularBarrel barrel = (TileEntityModularBarrel) worldIn.getTileEntity(pos);
 
             if (barrel != null) {
+
                 barrel.readNBT(stack.getTagCompound().getCompoundTag("TileData"));
             }
         }
-    }
-
-    @Override
-    public void onBlockExploded (World world, BlockPos pos, Explosion explosion) {
-
-        ItemStackUtils.dropStackInWorld(world, pos, ItemStackUtils.createStackFromTileEntity(world.getTileEntity(pos)));
-        world.setBlockToAir(pos);
-        this.onBlockDestroyedByExplosion(world, pos, explosion);
     }
 
     @Override
