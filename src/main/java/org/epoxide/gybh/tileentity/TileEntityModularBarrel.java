@@ -57,10 +57,6 @@ public class TileEntityModularBarrel extends TileEntityBasic {
         this.getWorld().notifyBlockUpdate(this.getPos(), state, state, 8);
     }
 
-    public void help () {
-
-    }
-
     @Override
     public void writeNBT (NBTTagCompound dataTag) {
 
