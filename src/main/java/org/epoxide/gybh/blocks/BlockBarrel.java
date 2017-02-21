@@ -8,6 +8,7 @@ import org.epoxide.gybh.api.BarrelTier;
 import org.epoxide.gybh.api.GybhApi;
 import org.epoxide.gybh.items.ItemBarrelUpgrade;
 import org.epoxide.gybh.libs.Constants;
+import org.epoxide.gybh.tileentity.ItemHandlerBarrel;
 import org.epoxide.gybh.tileentity.TileEntityModularBarrel;
 
 import net.darkhax.bookshelf.lib.BlockStates;
@@ -59,8 +60,8 @@ public class BlockBarrel extends BlockContainer {
 
         final TileEntityModularBarrel barrel = (TileEntityModularBarrel) worldIn.getTileEntity(pos);
 
-        // Handle bad tank
-        if (barrel == null || barrel.tier == null)
+        // Handle bad barrel
+        if (barrel == null || barrel.getTier() == null)
             return heldItem != null && !(heldItem.getItem() instanceof ItemBlock);
 
         // Handle upgrade
@@ -68,62 +69,47 @@ public class BlockBarrel extends BlockContainer {
 
             final BarrelTier upgradeTier = GybhApi.getTierFromStack(heldItem);
 
-            if (!barrel.isInvalid() && upgradeTier != null && barrel.tier.canApplyUpgrage(upgradeTier)) {
+            if (!barrel.isInvalid() && upgradeTier != null && barrel.getTier().canApplyUpgrage(upgradeTier)) {
 
                 barrel.upgradeBarrel(upgradeTier, state);
                 heldItem.stackSize--;
-                worldIn.markBlockRangeForRenderUpdate(pos.add(-1, -1, -1), pos);
+                barrel.updateTile();
                 return true;
             }
         }
 
-        if (barrel.itemStack == null) {
-            if (heldItem != null) {
-                if (heldItem.stackSize <= barrel.capacity) {
-                    barrel.itemStack = heldItem.copy();
-                    barrel.itemStack.stackSize = 1;
-                    barrel.stored = heldItem.stackSize;
-                    playerIn.setHeldItem(hand, null);
-                    worldIn.markBlockRangeForRenderUpdate(pos.add(-1, -1, -1), pos);
-                    return true;
-                }
-            }
+        // Handle adding new blocks
+        if (ItemStackUtils.isValidStack(heldItem)) {
+
+            final ItemStack remainder = barrel.getInventory().insertItem(0, heldItem, false);
+            playerIn.setHeldItem(hand, remainder);
+            barrel.updateTile();
+            return true;
         }
+
+        // Handle item extraction
         else {
 
-            if (playerIn.isSneaking() && heldItem == null) {
-                final ItemStack stack = barrel.itemStack.copy();
-                final int dropSize = Math.min(64, barrel.stored);
-                stack.stackSize = dropSize;
-                playerIn.dropItem(stack, false);
+            final ItemHandlerBarrel inventory = barrel.getInventory();
 
-                barrel.stored -= dropSize;
-                if (barrel.stored == 0) {
-                    barrel.itemStack = null;
+            if (inventory.getCount() <= 0)
+                return false;
+
+            final int dropSize = playerIn.isSneaking() ? inventory.getContentStack().getMaxStackSize() : 1;
+            final ItemStack extracted = inventory.extractItem(0, dropSize, false);
+
+            if (extracted != null) {
+
+                if (!worldIn.isRemote) {
+
+                    playerIn.entityDropItem(extracted, 1f);
                 }
-                worldIn.markBlockRangeForRenderUpdate(pos.add(-1, -1, -1), pos);
+
+                barrel.updateTile();
                 return true;
-
-            }
-            else if (heldItem != null) {
-                if (ItemStackUtils.areStacksEqual(barrel.itemStack, heldItem, true)) {
-                    if (heldItem.stackSize + barrel.stored > barrel.capacity) {
-                        if (barrel.capacity - barrel.stored > 0) {
-                            final int barrelDiff = barrel.capacity - barrel.stored;
-                            barrel.stored += barrelDiff;
-                            heldItem.stackSize -= barrelDiff;
-                        }
-                    }
-                    else {
-                        barrel.stored += heldItem.stackSize;
-
-                        playerIn.setHeldItem(hand, null);
-                    }
-                    worldIn.markBlockRangeForRenderUpdate(pos.add(-1, -1, -1), pos);
-                    return true;
-                }
             }
         }
+
         return false;
     }
 
@@ -142,8 +128,8 @@ public class BlockBarrel extends BlockContainer {
 
             final TileEntityModularBarrel tile = (TileEntityModularBarrel) world.getTileEntity(pos);
 
-            if (tile != null && tile.tier != null)
-                return ((IExtendedBlockState) state).withProperty(BlockStates.HELD_STATE, tile.tier.renderState);
+            if (tile != null && tile.getTier() != null)
+                return ((IExtendedBlockState) state).withProperty(BlockStates.HELD_STATE, tile.getTier().renderState);
         }
         return state;
     }
@@ -199,19 +185,12 @@ public class BlockBarrel extends BlockContainer {
     @Override
     public boolean removedByPlayer (IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest) {
 
-        final TileEntityModularBarrel barrel = (TileEntityModularBarrel) world.getTileEntity(pos);
-        if (barrel != null) {
-            if (barrel.itemStack != null) {
-                final ItemStack stack = barrel.itemStack.copy();
-                stack.stackSize = barrel.stored;
-                ItemStackUtils.dropStackInWorld(world, pos, stack);
-                barrel.itemStack = null;
-            }
-            if (!player.capabilities.isCreativeMode) {
+        if (!player.capabilities.isCreativeMode) {
 
-                ItemStackUtils.dropStackInWorld(world, pos, ItemStackUtils.createStackFromTileEntity(barrel));
-            }
+            final TileEntityModularBarrel barrel = (TileEntityModularBarrel) world.getTileEntity(pos);
+            ItemStackUtils.dropStackInWorld(world, pos, ItemStackUtils.createStackFromTileEntity(barrel));
         }
+
         return world.setBlockToAir(pos);
     }
 

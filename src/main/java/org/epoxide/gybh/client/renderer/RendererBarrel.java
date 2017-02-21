@@ -2,6 +2,7 @@ package org.epoxide.gybh.client.renderer;
 
 import org.apache.commons.lang3.StringUtils;
 import org.epoxide.gybh.api.BarrelTier;
+import org.epoxide.gybh.tileentity.ItemHandlerBarrel;
 import org.epoxide.gybh.tileentity.TileEntityModularBarrel;
 
 import com.google.common.collect.ImmutableMap;
@@ -29,12 +30,14 @@ public class RendererBarrel extends TileEntitySpecialRenderer<TileEntityModularB
     @Override
     public void renderTileEntityAt (TileEntityModularBarrel te, double x, double y, double z, float partialTicks, int destroyStage) {
 
-        if (te.itemStack != null) {
+        if (te.getInventory().getContentStack() != null) {
             this.renderItemStack(te, x, y, z);
         }
     }
 
     public void renderItemStack (TileEntityModularBarrel tileEntity, double x, double y, double z) {
+
+        final ItemHandlerBarrel inventory = tileEntity.getInventory();
 
         for (int i = 0; i < 4; i++) {
             GlStateManager.pushMatrix();
@@ -45,19 +48,19 @@ public class RendererBarrel extends TileEntitySpecialRenderer<TileEntityModularB
             GlStateManager.translate(0.0F, 0.0F, 0.4375F);
 
             float add = 0;
-            if (!(tileEntity.itemStack.getItem() instanceof ItemBlock)) {
+            if (!(inventory.getContentStack().getItem() instanceof ItemBlock)) {
                 GlStateManager.pushMatrix();
                 GlStateManager.translate(0.0F, 0.0F, 0.1F);
-                this.renderItem(tileEntity.itemStack);
+                this.renderItem(inventory.getContentStack());
                 GlStateManager.popMatrix();
                 add += 0.6;
             }
             GlStateManager.scale(0.4F, 0.4F, 0.4F);
             GlStateManager.translate(0.0F, 0.4F + add, 0.2F);
-            drawNameplate(Minecraft.getMinecraft().fontRendererObj, StringUtils.abbreviate(tileEntity.itemStack.getDisplayName(), 17), 0, 0, 0, 0, -180f, 0, false);
+            drawNameplate(Minecraft.getMinecraft().fontRendererObj, StringUtils.abbreviate(inventory.getContentStack().getDisplayName(), 17), 0, 0, 0, 0, -180f, 0, false);
             GlStateManager.translate(0.0F, -0.2F, 0.0F);
 
-            drawNameplate(Minecraft.getMinecraft().fontRendererObj, this.getStoredCapacity(tileEntity.stored) + "/" + this.getStoredCapacity(tileEntity.capacity), 0, 0, 0, 0, -180f, 0, false);
+            drawNameplate(Minecraft.getMinecraft().fontRendererObj, this.getStoredCapacity(inventory.getCount()) + "/" + this.getStoredCapacity(inventory.getCapacity()), 0, 0, 0, 0, -180f, 0, false);
 
             GlStateManager.popMatrix();
         }
@@ -95,8 +98,8 @@ public class RendererBarrel extends TileEntitySpecialRenderer<TileEntityModularB
     @Override
     public ImmutableMap<String, String> getRenderStates (TileEntityModularBarrel tileEntity) {
 
-        final BarrelTier tier = tileEntity.tier;
-        final ItemStack itemStack = tileEntity.itemStack;
+        final BarrelTier tier = tileEntity.getTier();
+        final ItemStack itemStack = tileEntity.getInventory().getContentStack();
 
         final ImmutableMap.Builder<String, String> builder = ImmutableMap.builder();
         if (tier != null && tier.renderState != null) {
@@ -105,7 +108,7 @@ public class RendererBarrel extends TileEntitySpecialRenderer<TileEntityModularB
         if (itemStack != null) {
             final Item i = itemStack.getItem();
             if (i instanceof ItemBlock) {
-                builder.put("background", RenderUtils.getSprite(Block.getBlockFromItem(i).getStateFromMeta(tileEntity.itemStack.getItemDamage())).getIconName());
+                builder.put("background", RenderUtils.getSprite(Block.getBlockFromItem(i).getStateFromMeta(itemStack.getItemDamage())).getIconName());
             }
             else {
                 builder.put("background", RenderUtils.getSprite(Blocks.STONE.getDefaultState()).getIconName());
