@@ -19,7 +19,7 @@ buildscript {
 }
 
 apply plugin: "maven"
-
+apply plugin: "com.matthewprenger.cursegradle"
 apply plugin: 'net.minecraftforge.gradle.forge'
 
 group = "org.epoxide.gybh"
