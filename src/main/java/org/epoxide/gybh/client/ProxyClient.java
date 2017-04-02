@@ -11,7 +11,6 @@ import org.epoxide.gybh.libs.Constants;
 import org.epoxide.gybh.tileentity.TileEntityModularBarrel;
 
 import net.darkhax.bookshelf.client.model.ModelMultiRetexturable;
-import net.darkhax.bookshelf.events.RenderItemEvent;
 import net.darkhax.bookshelf.lib.util.RenderUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.EntityRenderer;
@@ -85,49 +84,51 @@ public class ProxyClient extends ProxyCommon {
             exception.printStackTrace();
         }
     }
+    
+    //TOOD Liam fix it
 
-    @SubscribeEvent
-    public void renderItem (RenderItemEvent.Allow event) {
-
-        if (event.getItemStack().getItem() == Gybh.itemBlockModularBarrel) {
-            event.setCanceled(true);
-        }
-    }
-
-    @SubscribeEvent
-    public void renderItem (RenderItemEvent.Pre event) {
-
-        GlStateManager.pushMatrix();
-        BarrelTier tier = null;
-        ItemStack itemStack = null;
-        int stored = 0;
-
-        if (event.getItemStack().hasTagCompound() && event.getItemStack().getTagCompound().hasKey("TileData")) {
-            final NBTTagCompound tag = event.getItemStack().getTagCompound().getCompoundTag("TileData");
-            tier = GybhApi.getTier(tag.getString("TierID"));
-            itemStack = ItemStack.loadItemStackFromNBT(tag.getCompoundTag("ItemStackData"));
-            stored = tag.getCompoundTag("ItemStackData").getInteger("Stored");
-        }
-
-        for (int i = 0; i < 4; i++) {
-            GlStateManager.pushMatrix();
-            GlStateManager.translate(0.5D, 0.5D, 0.5D);
-            GlStateManager.rotate(90.0F * i, 0.0F, 1.0F, 0.0F);
-            Minecraft.getMinecraft().getRenderManager().renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-
-            GlStateManager.translate(0.0F, 0.0F, 0.4375F);
-
-            GlStateManager.pushMatrix();
-            GlStateManager.translate(0.0F, 0.4F, 0.07F);
-            GlStateManager.scale(0.4F, 0.4F, 0.4F);
-            EntityRenderer.drawNameplate(Minecraft.getMinecraft().fontRendererObj, itemStack.getDisplayName(), 0, 0, 0, 0, -180f, 0, false, false);
-
-            GlStateManager.translate(0.0F, -0.2F, 0.07F);
-            EntityRenderer.drawNameplate(Minecraft.getMinecraft().fontRendererObj, this.getStoredCapacity(stored) + "/" + this.getStoredCapacity(tier.getCapacity()), 0, 0, 0, 0, -180f, 0, false, false);
-        }
-
-        GlStateManager.popMatrix();
-    }
+//    @SubscribeEvent
+//    public void renderItem (RenderItemEvent.Allow event) {
+//
+//        if (event.getItemStack().getItem() == Gybh.itemBlockModularBarrel) {
+//            event.setCanceled(true);
+//        }
+//    }
+//
+//    @SubscribeEvent
+//    public void renderItem (RenderItemEvent.Pre event) {
+//
+//        GlStateManager.pushMatrix();
+//        BarrelTier tier = null;
+//        ItemStack itemStack = null;
+//        int stored = 0;
+//
+//        if (event.getItemStack().hasTagCompound() && event.getItemStack().getTagCompound().hasKey("TileData")) {
+//            final NBTTagCompound tag = event.getItemStack().getTagCompound().getCompoundTag("TileData");
+//            tier = GybhApi.getTier(tag.getString("TierID"));
+//            itemStack = ItemStack.loadItemStackFromNBT(tag.getCompoundTag("ItemStackData"));
+//            stored = tag.getCompoundTag("ItemStackData").getInteger("Stored");
+//        }
+//
+//        for (int i = 0; i < 4; i++) {
+//            GlStateManager.pushMatrix();
+//            GlStateManager.translate(0.5D, 0.5D, 0.5D);
+//            GlStateManager.rotate(90.0F * i, 0.0F, 1.0F, 0.0F);
+//            Minecraft.getMinecraft().getRenderManager().renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+//
+//            GlStateManager.translate(0.0F, 0.0F, 0.4375F);
+//
+//            GlStateManager.pushMatrix();
+//            GlStateManager.translate(0.0F, 0.4F, 0.07F);
+//            GlStateManager.scale(0.4F, 0.4F, 0.4F);
+//            EntityRenderer.drawNameplate(Minecraft.getMinecraft().fontRendererObj, itemStack.getDisplayName(), 0, 0, 0, 0, -180f, 0, false, false);
+//
+//            GlStateManager.translate(0.0F, -0.2F, 0.07F);
+//            EntityRenderer.drawNameplate(Minecraft.getMinecraft().fontRendererObj, this.getStoredCapacity(stored) + "/" + this.getStoredCapacity(tier.getCapacity()), 0, 0, 0, 0, -180f, 0, false, false);
+//        }
+//
+//        GlStateManager.popMatrix();
+//    }
 
     private String getStoredCapacity (int stored) {
 
