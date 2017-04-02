@@ -180,7 +180,7 @@ public class GybhApi {
 
         final EntityPlayer clientPlayer = PlayerUtils.getClientPlayer();
 
-        if (tier != null && clientPlayer != null && clientPlayer.worldObj != null) {
+        if (tier != null && clientPlayer != null && clientPlayer.world != null) {
 
             if (stack != null) {
 
